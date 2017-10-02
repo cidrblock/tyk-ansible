@@ -1,0 +1,11 @@
+ubuntu ansible_host=172.16.124.173
+
+
+[tyk_dashboard]
+ubuntu
+
+[mongo]
+ubuntu
+
+[redis]
+ubuntu

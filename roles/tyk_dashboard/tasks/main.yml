@@ -1,0 +1,108 @@
+- name: Add tyk GPG key which signs tyk binaries
+  apt_key:
+    url: https://packagecloud.io/gpg.key
+
+- name: Reload the package database
+  apt:
+    update_cache: yes
+
+- name: Make sure APT supports HTTPS
+  apt:
+    name: apt-transport-https
+    state: present
+
+- name: Add the required repose
+  lineinfile:
+    create: yes
+    destfile: /etc/apt/sources.list.d/tyk_tyk-dashboard.list
+    line: 'deb https://packagecloud.io/tyk/tyk-dashboard/ubuntu/ trusty main'
+
+- name: Add the required repose
+  lineinfile:
+    create: yes
+    destfile: /etc/apt/sources.list.d/tyk_tyk-dashboard.list
+    line: 'deb-src https://packagecloud.io/tyk/tyk-dashboard/ubuntu/ trusty main'
+
+- name: Reload the package database
+  apt:
+    update_cache: yes
+
+- name: Install the Tyk Dashboard
+  apt:
+    name: tyk-dashboard
+    state: present
+
+- name: Update the tyk_analytics_template with the site information
+  set_fact:
+    tyk_dashboard_config: "{{ tyk_dashboard_config_template|combine(tyk_dashboard_config, recursive=True) }}"
+
+- name: Write out the final conf file
+  copy:
+    content: "{{ tyk_dashboard_config|to_json }}"
+    dest: /opt/tyk-dashboard/tyk_analytics.conf
+    backup: yes
+
+- name: Start Tyk Dashboard
+  service:
+    name: tyk-dashboard
+    state: started
+
+- name: Load the exisiting organisations
+  uri:
+    url: "http://{{ ansible_default_ipv4['address'] }}:{{ tyk_dashboard_config['listen_port'] }}/admin/organisations"
+    method: GET
+    headers:
+      admin-auth: "{{ tyk_dashboard_config['admin_secret'] }}"
+  register: organisations
+
+- name: Set a fact for the matching organisations
+  set_fact:
+    exisiting_organisation: "{{ organisations['json']['organisations'] | selectattr('owner_name', 'equalto', tyk_dashboard_organization['owner_name'] ) | list }}"
+
+- name: Get the ID for the exisitng organisation
+  set_fact:
+    exisiting_organisation_id: "{{ exisiting_organisation[0]['id'] }}"
+  when: "{{ exisiting_organisation }}"
+
+- name: Creating Organisation
+  uri:
+    url: "http://{{ ansible_default_ipv4['address'] }}:{{ tyk_dashboard_config['listen_port'] }}/admin/organisations"
+    method: POST
+    headers:
+      admin-auth: "{{ tyk_dashboard_config['admin_secret'] }}"
+    body: "{{ tyk_dashboard_organization }}"
+    body_format: json
+  register: organisation
+  when: "{{ not exisiting_organisation }}"
+
+- name: Creating User
+  uri:
+    url: "http://{{ ansible_default_ipv4['address'] }}:{{ tyk_dashboard_config['listen_port'] }}/admin/users"
+    method: POST
+    headers:
+      admin-auth: "{{ tyk_dashboard_config['admin_secret'] }}"
+    body: "{{ tyk_dashboard_user_account }}"
+    body_format: json
+  register: user
+
+- debug:
+    msg: "http://{{ ansible_default_ipv4['address'] }}:{{ tyk_dashboard_config['listen_port'] }}/api/users/{{ user['json']['Meta']['id'] }}/actions/reset"
+
+- debug:
+    var: user
+
+- debug:
+    var: tyk_dashboard_user_password
+
+- debug:
+    var: tyk_dashboard_user_account
+
+- name: Setting user password
+  uri:
+    url: "http://{{ ansible_default_ipv4['address'] }}:{{ tyk_dashboard_config['listen_port'] }}/api/users/{{ user['json']['Meta']['id'] }}/actions/reset"
+    method: POST
+    headers:
+      authorization: "{{ user['json']['Message'] }}"
+    body: "{{ tyk_dashboard_user_password }}"
+    body_format: json
+  register: user_password

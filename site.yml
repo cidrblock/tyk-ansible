@@ -1,0 +1,24 @@
+- hosts: all
+  gather_facts: no
+  become: true
+  tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+- hosts: mongo
+  gather_facts: yes
+  become: true
+  roles:
+  - mongodb
+
+- hosts: redis
+  gather_facts: yes
+  become: true
+  roles:
+  - redis
+
+- hosts: redis
+  gather_facts: yes
+  become: true
+  roles:
+  - tyk_dashboard
