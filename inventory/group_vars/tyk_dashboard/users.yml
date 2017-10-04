@@ -9,7 +9,7 @@ tyk_dashboard_admin_account:
   active: true
 
 # leave the admin key blank for the intital install, it will be updated by the tyk_users role
-admin_key: 7258a799b9e04abd5afa31ab4367cae4
+admin_key:
 
 tyk_dashboard_user_account:
   first_name: Sample3
