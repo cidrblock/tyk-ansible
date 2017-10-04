@@ -1,31 +1,57 @@
 tyk_dashboard_config:
-  admin_secret: "12345"
+  admin_secret: '12345'
+  aggregate_lookup_cutoff: 01/07/2016
+  email_backend: {}
+  enable_aggregate_lookups: true
+  enable_duplicate_slugs: true
+  force_api_defaults: false
+  hash_keys: true
+  hide_listen_path: false
+  home_dir: /opt/tyk-dashboard
   host_config:
-    hostname: "{{ ansible_default_ipv4['address'] }}"
-    override_hostname: "{{ inventory_hostname }}"
+    disable_org_slug_prefix: true
+    enable_host_names: true
+    hostname: '{{ ansible_default_ipv4[''address''] }}'
+    override_hostname: '{{ inventory_hostname }}'
+    portal_domains: {}
     portal_root_path: /portal
-  license_key: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGxvd2VkX25vZGVzIjoiYTNhNWM3YzUtMTdhMi00MTM1LTRhNjktOGIzZTQzMzVjMzY5IiwiZXhwIjoxNTM4MjM5NzUyLCJvd25lciI6IjU5Y2U3OTg4NDVmOTJlMWI3NzBiMTA2MiJ9.dqDYpjcZZccSaAS0wqsqzUYLRX8fzfe_c7bi8A4zsSiU4LWOaw_qtRrvV2Y4AY32iT2s_zW86HRJJQb_td8fqjFYcbCSWkn3f3fsRmusXCNKqTEc72WJggd5jUwETJiTPqCu_1THGI32CCLC0CvXMb3HeKki9h9rAGK_ULtD8lJD5LRPvLdirzpduGSBAYX1zGU2neMws2wcqOqKcx8k6cM3xSOYbSGOs1WNsn6p2n8homL7mvZkvLhrohrrRNBsPhVqyKk0mjdrChDeOoN2npv-XuTBjnD9j6uPgzT1raJbb8f37XjTkCxWf5zveQAjyBq0vJH4QIf4YWf6J_ETBw
-  license_owner: Starbucks Coffee Company
+  http_server_options:
+    certificates:
+    - {}
+    use_ssl: false
+  identity_broker:
+    enabled: false
+    host:
+      connection_string: http://localhost:3010
+      secret: 934893845123491238192381486djfhr87234827348
+  license_key: xxxxxxxxxxxxxx
+  license_owner: Company
   listen_port: 3000
   mongo_url: mongodb://127.0.0.1/tyk_analytics
+  notify_on_change: true
+  oauth_redirect_uri_separator: ;
+  page_size: 10
+  private_key_path: ''
   redis_host: localhost
+  redis_password: null
   redis_port: 6379
+  sentry_code: ''
+  sentry_js_code: ''
+  shared_node_secret: 352d20ee67be67f6340b4c0605b044b7
+  show_org_id: true
   tyk_api_config:
     Host: http://localhost
-    Port: "8080"
-
-tyk_dashboard_organization:
-  owner_name: Default Org
-  owner_slug: default
-  cname_enabled: true
-  cname: ""
-
-tyk_dashboard_user_account:
-  first_name: Sample3
-  last_name: User
-  email_address: suser3@company.net
-  org_id: "{{ exisiting_organisation_id if exisiting_organisation else organisation['json']['Meta'] }}"
-  password: password
-
-tyk_dashboard_user_password:
-  new_password: password
+    Port: '8080'
+    Secret: 352d20ee67be67f6340b4c0605b044b7
+  ui:
+    default_lang: en
+    designer: {}
+    languages:
+      Chinese: cn
+      English: en
+      Korean: ko
+    login_page: {}
+    nav: {}
+    portal: {}
+    uptime: {}
+  use_sentry: false

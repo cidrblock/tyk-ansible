@@ -1,0 +1,104 @@
+### super user
+
+- name: Creating super-user
+  uri:
+    url: "http://{{ ansible_default_ipv4['address'] }}:{{ tyk_dashboard_config['listen_port'] }}/admin/users"
+    method: POST
+    headers:
+      admin-auth: "{{ tyk_dashboard_config['admin_secret'] }}"
+    body: "{{ tyk_dashboard_admin_account }}"
+    body_format: json
+  register: admin
+  when: "{{ not admin_key }}"
+
+- name: Setting admin password
+  uri:
+    url: "http://{{ ansible_default_ipv4['address'] }}:{{ tyk_dashboard_config['listen_port'] }}/api/users/{{ admin['json']['Meta']['id'] }}/actions/reset"
+    method: POST
+    headers:
+      authorization: "{{ admin['json']['Message'] }}"
+    body:
+      new_password: "{{ tyk_dashboard_admin_account['password'] }}"
+    body_format: json
+  register: user_password
+  when: "{{ not admin_key }}"
+
+- name: Write the admin key to the vars file so we don't recreate the admin user
+  local_action:
+    module: lineinfile
+    dest: ./inventory/group_vars/tyk_dashboard/users.yml
+    regexp: 'admin_key:'
+    line: "admin_key: {{ admin['json']['Message'] }}"
+  become: false
+  when: "{{ not admin_key }}"
+
+- name: Set a fact for the super-user key
+  set_fact:
+    admin_key: "{{ admin_key if admin_key else admin['json']['Message'] }}"
+
+### organisation
+
+- name: Load the exisiting organisations
+  uri:
+    url: "http://{{ ansible_default_ipv4['address'] }}:{{ tyk_dashboard_config['listen_port'] }}/admin/organisations"
+    method: GET
+    headers:
+      admin-auth: "{{ tyk_dashboard_config['admin_secret'] }}"
+  register: organisations
+
+- name: Set a fact for the matching organisations
+  set_fact:
+    exisiting_organisation: "{{ organisations['json']['organisations'] | selectattr('owner_name', 'equalto', tyk_dashboard_organization['owner_name'] ) | list }}"
+
+- name: Get the ID for the exisitng organisation
+  set_fact:
+    exisiting_organisation_id: "{{ exisiting_organisation[0]['id'] }}"
+  when: "{{ exisiting_organisation }}"
+
+- name: Creating Organisation
+  uri:
+    url: "http://{{ ansible_default_ipv4['address'] }}:{{ tyk_dashboard_config['listen_port'] }}/admin/organisations"
+    method: POST
+    headers:
+      admin-auth: "{{ tyk_dashboard_config['admin_secret'] }}"
+    body: "{{ tyk_dashboard_organization }}"
+    body_format: json
+  register: organisation
+  when: "{{ not exisiting_organisation }}"
+
+### sample user
+
+- name: Retrieve the exisiting users
+  uri:
+    url: "http://{{ ansible_default_ipv4['address'] }}:{{ tyk_dashboard_config['listen_port'] }}/api/users"
+    method: GET
+    headers:
+      authorization: "{{ admin_key }}"
+  register: current_users
+
+- name: Set a fact for the matching users
+  set_fact:
+    exisiting_user: "{{ current_users['json']['users'] | selectattr('email_address', 'equalto', tyk_dashboard_user_account['email_address'] ) | list }}"
+
+- name: Creating User in organization
+  uri:
+    url: "http://{{ ansible_default_ipv4['address'] }}:{{ tyk_dashboard_config['listen_port'] }}/admin/users"
+    method: POST
+    headers:
+      admin-auth: "{{ tyk_dashboard_config['admin_secret'] }}"
+    body: "{{ tyk_dashboard_user_account }}"
+    body_format: json
+  register: user
+  when: "{{ not exisiting_user }}"
+
+- name: Setting user password
+  uri:
+    url: "http://{{ ansible_default_ipv4['address'] }}:{{ tyk_dashboard_config['listen_port'] }}/api/users/{{ user['json']['Meta']['id'] }}/actions/reset"
+    method: POST
+    headers:
+      authorization: "{{ user['json']['Message'] }}"
+    body:
+      new_password: "{{ tyk_dashboard_user_account['password'] }}"
+    body_format: json
+  register: user_password
+  when: "{{ not exisiting_user }}"

@@ -11,37 +11,37 @@
     name: apt-transport-https
     state: present
 
-- name: Add the required repose for tyk dashboard
+- name: Add the required repose for tyk pump
   lineinfile:
     create: yes
     destfile: /etc/apt/sources.list.d/tyk_tyk-dashboard.list
-    line: 'deb https://packagecloud.io/tyk/tyk-dashboard/ubuntu/ trusty main'
+    line: 'deb https://packagecloud.io/tyk/tyk-pump/ubuntu/ trusty main'
 
-- name: Add the required repose tyk dashboard
+- name: Add the required repose for tyk pump
   lineinfile:
     create: yes
     destfile: /etc/apt/sources.list.d/tyk_tyk-dashboard.list
-    line: 'deb-src https://packagecloud.io/tyk/tyk-dashboard/ubuntu/ trusty main'
+    line: 'deb-src https://packagecloud.io/tyk/tyk-pump/ubuntu/ trusty main'
 
 - name: Reload the package database
   apt:
     update_cache: yes
 
-- name: Install the Tyk Dashboard
+- name: Install Tyk pump
   apt:
-    name: tyk-dashboard
+    name: tyk-pump
     state: present
 
 - name: Write out the final conf file
   copy:
-    content: "{{ tyk_dashboard_config|to_json }}"
-    dest: /opt/tyk-dashboard/tyk_analytics.conf
+    content: "{{ tyk_pump_config|to_json }}"
+    dest: /opt/tyk-pump/pump.conf
     backup: yes
-  register: tyk_dashboard_config_write
+  register: tyk_pump_config_write
 
-- name: Restart Tyk Dashboard
+- name: Restart Tyk pump
   service:
-    name: tyk-dashboard
+    name: tyk-pump
     state: restarted
     enabled: yes
-  when: "{{ tyk_dashboard_config_write.changed }}"
+  when: "{{ tyk_pump_config_write.changed }}"

@@ -17,8 +17,21 @@
   roles:
   - redis
 
-- hosts: redis
+- hosts: tyk_dashboard
   gather_facts: yes
   become: true
   roles:
   - tyk_dashboard
+  - tyk_dashboard_users
+
+- hosts: tyk_pump
+  gather_facts: yes
+  become: true
+  roles:
+  - tyk_pump
+
+- hosts: tyk_gateway_with_dashboard
+  gather_facts: yes
+  become: true
+  roles:
+  - tyk_gateway_with_dashboard

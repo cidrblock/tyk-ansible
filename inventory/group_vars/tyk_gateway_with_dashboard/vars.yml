@@ -1,0 +1,86 @@
+tyk_gateway_config:
+  allow_insecure_configs: true
+  allow_master_keys: false
+  allow_remote_config: false
+  analytics_config:
+    csv_dir: /tmp
+    enable_detailed_recording: true
+    enable_geo_ip: false
+    geo_ip_db_path: ''
+    ignored_ips: []
+    mongo_collection: ''
+    mongo_db_name: ''
+    mongo_url: ''
+    normalise_urls:
+      custom_patterns: []
+      enabled: true
+      normalise_numbers: true
+      normalise_uuids: true
+    pool_size: 100
+    purge_delay: 100
+    type: mongo
+  app_path: /opt/tyk-gateway/apps
+  bundle_base_url: ''
+  close_connections: true
+  close_idle_connections: false
+  coprocess_options:
+    coprocess_grpc_server: ''
+    enable_coprocess: false
+  db_app_conf_options:
+    connection_string: ''
+    node_is_segmented: false
+    tags: []
+  disable_dashboard_zeroconf: false
+  enable_analytics: true
+  enable_bundle_downloader: true
+  enable_custom_domains: true
+  enable_jsvm: true
+  enable_non_transactional_rate_limiter: true
+  enable_sentinel_rate_limiter: false
+  experimental_process_org_off_thread: true
+  force_global_session_lifetime: false
+  global_session_lifetime: 100
+  hash_keys: true
+  health_check:
+    enable_health_checks: false
+    health_check_value_timeouts: 60
+  hostname: ''
+  http_server_options:
+    enable_websockets: true
+  listen_port: 8080
+  local_session_cache:
+    disable_cached_session_state: false
+  max_idle_connections_per_host: 100
+  middleware_path: /opt/tyk-gateway/middleware
+  node_secret: 352d20ee67be67f6340b4c0605b044b7
+  oauth_redirect_uri_separator: ;
+  optimisations_use_async_session_write: true
+  pid_file_location: ./tyk-gateway.pid
+  policies:
+    allow_explicit_policy_id: true
+    policy_connection_string: ''
+    policy_record_name: tyk_policies
+    policy_source: service
+  public_key_path: ''
+  secret: 352d20ee67be67f6340b4c0605b044b7
+  storage:
+    database: 0
+    host: localhost
+    optimisation_max_active: 4000
+    optimisation_max_idle: 2000
+    password:
+    port: 6379
+    type: redis
+    username: ''
+  suppress_redis_signal_reload: false
+  template_path: /opt/tyk-gateway/templates
+  tyk_js_path: /opt/tyk-gateway/js/tyk.js
+  uptime_tests:
+    config:
+      checker_pool_size: 50
+      enable_uptime_analytics: true
+      failure_trigger_sample_size: 2
+      time_wait: 10
+    disable: false
+  use_db_app_configs: true
+  use_redis_log: true

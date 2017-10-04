@@ -1,0 +1,6 @@
+
+tyk_dashboard_organization:
+  owner_name: Default Org.
+  owner_slug: default
+  cname_enabled: true
+  cname: ""

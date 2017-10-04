@@ -1,0 +1,22 @@
+tyk_dashboard_admin_account:
+  first_name: admin
+  last_name: user
+  email_address: admin@company.net
+  org_id:
+  password: password
+  user_permissions:
+    IsAdmin: admin
+  active: true
+
+# leave the admin key blank for the intital install, it will be updated by the tyk_users role
+admin_key: 7258a799b9e04abd5afa31ab4367cae4
+
+tyk_dashboard_user_account:
+  first_name: Sample3
+  last_name: User
+  email_address: sample@company.net
+  org_id: "{{ exisiting_organisation_id if exisiting_organisation else organisation['json']['Meta'] }}"
+  password: password
+  user_permissions:
+    IsAdmin: admin
+  active: true

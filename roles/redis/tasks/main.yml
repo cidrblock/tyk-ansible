@@ -2,3 +2,9 @@
   apt:
     name: redis-server
     state: present
+
+- name: Start redis
+  service:
+    name: redis-server
+    state: started
+    enabled: yes
