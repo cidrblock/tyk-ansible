@@ -41,3 +41,4 @@
   become: true
   roles:
   - tyk_python
+  - tyk_plugin

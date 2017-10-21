@@ -1,0 +1,13 @@
+- name: Install go
+  apt:
+    name: golang-go
+    state: present
+
+- name: See if the tyk-cli is installed
+  stat:
+    path: /opt/tyk-gateway/utils/tyk-cli
+  register: tykcli
+
+- name: Install the tyk-cli
+  shell: export GOPATH=/tmp && go get -u github.com/TykTechnologies/tyk-cli
+  when: not tykcli.stat.exists

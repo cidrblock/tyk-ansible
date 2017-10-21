@@ -36,10 +36,41 @@
 
   when: not libprotobuf.stat.exists
 
-- name: Install python3
+- name: Install python 3.4 dependancies
   apt:
-    name: python3
+    name: "{{ item }}"
     state: present
+  with_items:
+    - build-essential
+    - checkinstall
+    - libreadline-gplv2-dev
+    - libncursesw5-dev
+    - libssl-dev
+    - libsqlite3-dev
+    - tk-dev
+    - libgdbm-dev
+    - libc6-dev
+    - libbz2-dev
+
+- name: Fetch the python 3.4.7 dist
+  get_url:
+    url:  https://www.python.org/ftp/python/3.4.7/Python-3.4.7.tgz
+    dest: /usr/src/Python-3.4.7.tgz
+
+- name: Untar the file
+  shell: tar -xvzf Python-3.4.7.tgz
+  args:
+    chdir: /usr/src
+
+- name: Configure python
+  shell: ./configure --enabled-shared --libdir=/usr/lib/x86_64-linux-gnu
+  args:
+    chdir: /usr/src/Python-3.4.7
+
+- name: Make install Python-3.4.7
+  make:
+    chdir: /usr/src/Python-3.4.7
+    target: altinstall
 
 - name: Install python3-pip
   apt:
@@ -66,3 +97,15 @@
   args:
     chdir: /usr/src/protobuf-3.1.0/python
   when: "'protobuf==3.1.0' not in pip3_freeze['stdout']"
+
+- name: Stop tyk-gateway
+  service:
+    name: tyk-gateway
+    state: stopped
+    enabled: no
+
+ name: Start tyk-gateway-python
+  service:
+    name: tyk-gateway-python
+    state: started
+    enabled: yes

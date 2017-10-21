@@ -20,12 +20,12 @@ tyk_gateway_config:
     purge_delay: 100
     type: mongo
   app_path: /opt/tyk-gateway/apps
-  bundle_base_url: ''
+  bundle_base_url: 'http://172.16.124.178:8000'
   close_connections: true
   close_idle_connections: false
   coprocess_options:
     coprocess_grpc_server: ''
-    enable_coprocess: false
+    enable_coprocess: true
   db_app_conf_options:
     connection_string: ''
     node_is_segmented: false
