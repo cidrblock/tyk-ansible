@@ -1,0 +1,68 @@
+- name: Install the build tools
+  apt:
+    name: build-essential
+    state: present
+
+- name: Check if libprotobuf.so is installed
+  stat:
+    path: /usr/lib/libprotobuf.so
+  register: libprotobuf
+
+- block:
+
+  - name: Fetch the latest protocol buffer library
+    get_url:
+      url:   https://github.com/google/protobuf/releases/download/v3.1.0/protobuf-python-3.1.0.tar.gz
+      dest: /usr/src/protobuf-python-3.1.0.tar.gz
+
+  - name: Untar the file
+    shell: tar -xvzf protobuf-python-3.1.0.tar.gz
+    args:
+      chdir: /usr/src
+
+  - name: Configure the protocol buffer library
+    shell: ./configure -prefix=/usr
+    args:
+      chdir: /usr/src/protobuf-3.1.0
+
+  - name: Make protobuf-3.1.0
+    make:
+      chdir: /usr/src/protobuf-3.1.0
+
+  - name: Make install protobuf-3.1.0
+    make:
+      chdir: /usr/src/protobuf-3.1.0
+      target: install
+
+  when: not libprotobuf.stat.exists
+
+- name: Install python3
+  apt:
+    name: python3
+    state: present
+
+- name: Install python3-pip
+  apt:
+    name: python3-pip
+    state: present
+
+- name: Install python3-setuptools
+  apt:
+    name: python3-setuptools
+    state: present
+
+- name: Install python3-dev
+  apt:
+    name: python3-dev
+    state: present
+
+- name: Run pip3 to check if protobuf==3.1.0 is installed
+  shell: pip3 freeze
+  register: pip3_freeze
+  changed_when: false
+
+- name: Build and install the Python module
+  shell: python3 setup.py build --cpp_implementation && python3 setup.py install --cpp_implementation
+  args:
+    chdir: /usr/src/protobuf-3.1.0/python
+  when: "'protobuf==3.1.0' not in pip3_freeze['stdout']"

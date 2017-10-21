@@ -35,3 +35,9 @@
   become: true
   roles:
   - tyk_gateway_with_dashboard
+
+- hosts: tyk_gateway_with_dashboard
+  gather_facts: yes
+  become: true
+  roles:
+  - tyk_python
