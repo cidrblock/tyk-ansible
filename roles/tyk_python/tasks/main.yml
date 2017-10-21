@@ -104,7 +104,7 @@
     state: stopped
     enabled: no
 
- name: Start tyk-gateway-python
+- name: Start tyk-gateway-python
   service:
     name: tyk-gateway-python
     state: started
