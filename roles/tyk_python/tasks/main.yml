@@ -63,7 +63,7 @@
     chdir: /usr/src
 
 - name: Configure python
-  shell: ./configure --enabled-shared --libdir=/usr/lib/x86_64-linux-gnu
+  shell: ./configure --enable-shared --libdir=/usr/lib/x86_64-linux-gnu
   args:
     chdir: /usr/src/Python-3.4.7
 
