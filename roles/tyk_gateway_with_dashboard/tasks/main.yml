@@ -44,4 +44,4 @@
     name: tyk-gateway
     state: restarted
     enabled: yes
-  when: "{{ tyk_gateway_config_write.changed }}"
+  when: tyk_gateway_config_write.changed

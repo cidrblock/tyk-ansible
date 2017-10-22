@@ -9,7 +9,7 @@
     body: "{{ tyk_dashboard_admin_account }}"
     body_format: json
   register: admin
-  when: "{{ not admin_key }}"
+  when: not admin_key
 
 - name: Setting admin password
   uri:
@@ -21,7 +21,7 @@
       new_password: "{{ tyk_dashboard_admin_account['password'] }}"
     body_format: json
   register: user_password
-  when: "{{ not admin_key }}"
+  when: not admin_key
 
 - name: Write the admin key to the vars file so we don't recreate the admin user
   local_action:
@@ -30,7 +30,7 @@
     regexp: 'admin_key:'
     line: "admin_key: {{ admin['json']['Message'] }}"
   become: false
-  when: "{{ not admin_key }}"
+  when: not admin_key
 
 - name: Set a fact for the super-user key
   set_fact:
@@ -53,7 +53,7 @@
 - name: Get the ID for the exisitng organisation
   set_fact:
     exisiting_organisation_id: "{{ exisiting_organisation[0]['id'] }}"
-  when: "{{ exisiting_organisation }}"
+  when: exisiting_organisation
 
 - name: Creating Organisation
   uri:
@@ -64,7 +64,7 @@
     body: "{{ tyk_dashboard_organization }}"
     body_format: json
   register: organisation
-  when: "{{ not exisiting_organisation }}"
+  when: not exisiting_organisation
 
 ### sample user
 
@@ -89,7 +89,7 @@
     body: "{{ tyk_dashboard_user_account }}"
     body_format: json
   register: user
-  when: "{{ not exisiting_user }}"
+  when: not exisiting_user
 
 - name: Setting user password
   uri:
@@ -101,4 +101,4 @@
       new_password: "{{ tyk_dashboard_user_account['password'] }}"
     body_format: json
   register: user_password
-  when: "{{ not exisiting_user }}"
+  when: not exisiting_user

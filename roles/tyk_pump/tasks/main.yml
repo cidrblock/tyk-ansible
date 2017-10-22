@@ -44,4 +44,4 @@
     name: tyk-pump
     state: restarted
     enabled: yes
-  when: "{{ tyk_pump_config_write.changed }}"
+  when: tyk_pump_config_write.changed

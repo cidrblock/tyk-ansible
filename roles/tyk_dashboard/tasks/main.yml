@@ -44,4 +44,4 @@
     name: tyk-dashboard
     state: restarted
     enabled: yes
-  when: "{{ tyk_dashboard_config_write.changed }}"
+  when: tyk_dashboard_config_write.changed
