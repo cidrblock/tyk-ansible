@@ -104,6 +104,18 @@
     state: stopped
     enabled: no
 
+- name: Give the tyk-gateway-lua service a unique name
+  lineinfile:
+    path: /etc/init.d/tyk-gateway-lua
+    regexp: '^# Provides:\s+tyk-gateway$'
+    line: '# Provides:          tyk-gateway-lua'
+
+- name: Give the tyk-gateway-python service a unique name
+  lineinfile:
+    path: /etc/init.d/tyk-gateway-python
+    regexp: '^# Provides:\s+tyk-gateway$'
+    line: '# Provides:          tyk-gateway-python'
+
 - name: Start tyk-gateway-python
   service:
     name: tyk-gateway-python
