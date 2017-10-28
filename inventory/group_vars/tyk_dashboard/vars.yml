@@ -24,7 +24,7 @@ tyk_dashboard_config:
     host:
       connection_string: http://localhost:3010
       secret: 934893845123491238192381486djfhr87234827348
-  license_key: xxxx
+  license_key: "{{ lookup('env', 'TYK_LICENSE_KEY') }}"
   license_owner: Company
   listen_port: 3000
   mongo_url: mongodb://127.0.0.1/tyk_analytics

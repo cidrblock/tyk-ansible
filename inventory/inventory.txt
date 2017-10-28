@@ -1,4 +1,4 @@
-ubuntu ansible_host=192.168.122.79
+ubuntu ansible_host=172.16.124.184
 
 
 [tyk_dashboard]

@@ -14,7 +14,7 @@ This is being tested on Ubuntu 16.04.3 LTS and Ansible 2.2.
 
 ### Server credentials
 
-Two environment variables need to be set correctly prior to the run for the username and password of the Ubuntu server:
+Environment variables need to be set correctly prior to the run for the username and password of the Ubuntu server:
 
 ```
 export ANSIBLE_SSH_USERNAME=ubuntu
@@ -22,10 +22,9 @@ export ANSIBLE_SSH_PASSWORD=ubuntu
 ```
 
 ### License key
-You will need to update the licaense key prior to the playbook run. The tyk dashboard site configuration can be found in
-
+You will need to set the license key prior to the playbook run.
 ```
-inventory/tyk_dashboard/vars.yml
+export TYK_LICENSE_KEY='eyJhbGciOiJSUzI1Ni'
 ```
 
 ### Server IP address
@@ -55,6 +54,17 @@ Two users are built, one super-admin and one admin in the default organization. 
 inventory/tyk_dashboard/users.yml
 inventory/tyk_dashboard/organisation.yml
 ```
+
+### Building a python middleware
+
+git clone https://github.com/TykTechnologies/tyk-plugin-demo-python
+cd tyk-plugin-demo-python
+/opt/tyk-gateway/utils/tyk-cli bundle build -y
+python3 -m http.server
+add it to you API https://tyk.io/docs/customise-tyk/plugins/rich-plugins/python/custom-auth-python-tutorial/#dashboard
+
+
+
 
 ### Usage
 

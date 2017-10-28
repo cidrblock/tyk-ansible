@@ -63,7 +63,7 @@
     chdir: /usr/src
 
 - name: Configure python
-  shell: ./configure --enable-shared --libdir=/usr/lib/x86_64-linux-gnu
+  shell: ./configure --enable-shared --libdir=/usr/local/lib LDFLAGS="-Wl,--rpath=/usr/local/lib"
   args:
     chdir: /usr/src/Python-3.4.7
 
@@ -72,10 +72,25 @@
     chdir: /usr/src/Python-3.4.7
     target: altinstall
 
-- name: Install python3-pip
-  apt:
-    name: python3-pip
-    state: present
+- name: Link the python libs so tyk can find them
+  file:
+    src: /usr/local/lib/{{item}}
+    dest: /usr/lib/x86_64-linux-gnu/{{ item }}
+    state: link
+  with_items:
+  - libpython3.4m.so
+  - libpython3.4m.so.1.0
+  # - libpython3.so
+
+- name: Install HTTP/2-based RPC framework
+  pip:
+    name: grpcio
+    executable: pip3.4
+
+# - name: Install python3-pip
+#   apt:
+#     name: python3-pip
+#     state: present
 
 - name: Install python3-setuptools
   apt:
@@ -88,12 +103,12 @@
     state: present
 
 - name: Run pip3 to check if protobuf==3.1.0 is installed
-  shell: pip3 freeze
+  shell: pip3.4 freeze
   register: pip3_freeze
   changed_when: false
 
 - name: Build and install the Python module
-  shell: python3 setup.py build --cpp_implementation && python3 setup.py install --cpp_implementation
+  shell: python3.4 setup.py build --cpp_implementation && python3 setup.py install --cpp_implementation
   args:
     chdir: /usr/src/protobuf-3.1.0/python
   when: "'protobuf==3.1.0' not in pip3_freeze['stdout']"
@@ -106,13 +121,13 @@
 
 - name: Give the tyk-gateway-lua service a unique name
   lineinfile:
-    path: /etc/init.d/tyk-gateway-lua
+    name: /etc/init.d/tyk-gateway-lua
     regexp: '^# Provides:\s+tyk-gateway$'
     line: '# Provides:          tyk-gateway-lua'
 
 - name: Give the tyk-gateway-python service a unique name
   lineinfile:
-    path: /etc/init.d/tyk-gateway-python
+    name: /etc/init.d/tyk-gateway-python
     regexp: '^# Provides:\s+tyk-gateway$'
     line: '# Provides:          tyk-gateway-python'
 
