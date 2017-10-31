@@ -27,6 +27,14 @@ You will need to set the license key prior to the playbook run.
 export TYK_LICENSE_KEY='eyJhbGciOiJSUzI1Ni'
 ```
 
+### Bundle base url
+
+Set the URL where tyk gateway can download middleware bundles:
+
+```
+export TYK_BUNDLE_BASE_URL='http://172.16.124.184:9999/'
+```
+
 ### Server IP address
 
 The IP address of the Ubuntu server will also need to be updated if it cannot be found in DNS.  It can be found:
@@ -55,16 +63,21 @@ inventory/tyk_dashboard/users.yml
 inventory/tyk_dashboard/organisation.yml
 ```
 
-### Building a python middleware
+### Building the example python middleware
 
+On the server itself:
+```
 git clone https://github.com/TykTechnologies/tyk-plugin-demo-python
 cd tyk-plugin-demo-python
 /opt/tyk-gateway/utils/tyk-cli bundle build -y
 python3 -m http.server
+```
+
 add it to you API https://tyk.io/docs/customise-tyk/plugins/rich-plugins/python/custom-auth-python-tutorial/#dashboard
 
+### Site specific configuration
 
-
+A role called site_config exists which may contain changes and/or software specific to the deployment
 
 ### Usage
 

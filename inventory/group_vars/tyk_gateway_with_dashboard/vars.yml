@@ -20,7 +20,7 @@ tyk_gateway_config:
     purge_delay: 100
     type: mongo
   app_path: /opt/tyk-gateway/apps
-  bundle_base_url: 'http://{{ ansible_default_ipv4.address }}:8000/'
+  bundle_base_url: "{{ lookup('env', 'TYK_BUNDLE_BASE_URL') }}"
   close_connections: true
   close_idle_connections: false
   coprocess_options:
@@ -40,7 +40,7 @@ tyk_gateway_config:
   experimental_process_org_off_thread: true
   force_global_session_lifetime: false
   global_session_lifetime: 100
-  hash_keys: true
+  hash_keys: false
   health_check:
     enable_health_checks: false
     health_check_value_timeouts: 60
