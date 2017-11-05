@@ -10,7 +10,7 @@ The super-user api key should be removed from the users.yml file for a new insta
 
 ### OS/Ansible versions
 
-This is being tested on Ubuntu 16.04.3 LTS and Ansible 2.2.
+This is being tested on Ubuntu 16.04.3 LTS and Ansible 2.4.
 
 ### Server credentials
 
